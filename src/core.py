@@ -35,7 +35,7 @@ def train_classification_model(X: np.ndarray, y: np.ndarray) -> RandomForestClas
     return model
 
 def plot_classification_results(y_true: np.ndarray, y_pred: np.ndarray, title: str, output_path: Path):
- """Plot classification results """
+    """Plot classification results """
     fig, ax = plt.subplots(figsize=(10, 6))
     
     time = np.arange(len(y_true))
