@@ -55,20 +55,20 @@ def main():
     X_train, X_test = X[:train_size], X[train_size:]
     y_train, y_test = y_class_lagged[:train_size], y_class_lagged[train_size:]
     
-        model = train_classification_model(X_train, y_train)
+    model = train_classification_model(X_train, y_train)
     
-        y_pred = model.predict(X_test)
+    y_pred = model.predict(X_test)
     
     from sklearn.metrics import accuracy_score
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
-    accuracy = accuracy_score(y_test, y_pred)
-    logging.info(f"\nClassification Accuracy: {accuracy:.4f}")
+accuracy = accuracy_score(y_test, y_pred)
+logging.info(f"\nClassification Accuracy: {accuracy:.4f}")
     
-    plot_classification_results(y_test, y_pred, "Classification-Based Forecasting",
+plot_classification_results(y_test, y_pred, "Classification-Based Forecasting",
                                output_dir / 'classification_forecast.png')
     
-    logging.info(f"\nAnalysis complete. Figures saved to {output_dir}")
+logging.info(f"\nAnalysis complete. Figures saved to {output_dir}")
 
 if __name__ == "__main__":
     main()

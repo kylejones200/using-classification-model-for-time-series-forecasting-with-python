@@ -9,6 +9,12 @@ from sklearn.pipeline import Pipeline
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score, roc_auc_score
 
+import logging
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(levelname)s - %(message)s'
+)
+logger = logging.getLogger(__name__)
 np.random.seed(42)
 plt.rcParams.update(
     {
@@ -91,7 +97,7 @@ def main():
     s = load_series(cfg)
     df = build_supervised(s, cfg.max_lag, cfg.season)
     acc, auc = chrono_classification(df, cfg)
-    print(f"Up/Down classification — Accuracy: {acc:.4f}, AUC: {auc:.4f}")
+    logger.info(f"Up/Down classification — Accuracy: {acc:.4f}, AUC: {auc:.4f}")
 
     # Simple visualization of last 3 years with predicted direction baseline (seasonal naive)
     tail = s.tail(36)
