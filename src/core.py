@@ -34,17 +34,18 @@ def train_classification_model(X: np.ndarray, y: np.ndarray) -> RandomForestClas
     model.fit(X, y)
     return model
 
-def plot_classification_results(y_true: np.ndarray, y_pred: np.ndarray, title: str, output_path: Path):
+def plot_classification_results(y_true: np.ndarray, y_pred: np.ndarray, title: str, output_path: Path, plot: bool = False):
     """Plot classification results """
-    fig, ax = plt.subplots(figsize=(10, 6))
+    if plot:
+        fig, ax = plt.subplots(figsize=(10, 6))
     
-    time = np.arange(len(y_true))
-    ax.plot(time, y_true, label="Actual Class", color="#4A90A4", linewidth=1.2, marker='o', markersize=3)
-    ax.plot(time, y_pred, label="Predicted Class", color="#D4A574", linewidth=1.2, marker='s', markersize=3, alpha=0.7)
-    ax.set_xlabel("Time")
-    ax.set_ylabel("Class")
-    ax.legend(loc='best')
+        time = np.arange(len(y_true))
+        ax.plot(time, y_true, label="Actual Class", color="#4A90A4", linewidth=1.2, marker='o', markersize=3)
+        ax.plot(time, y_pred, label="Predicted Class", color="#D4A574", linewidth=1.2, marker='s', markersize=3, alpha=0.7)
+        ax.set_xlabel("Time")
+        ax.set_ylabel("Class")
+        ax.legend(loc='best')
     
-    plt.savefig(output_path, dpi=100, bbox_inches="tight")
-    plt.close()
+        plt.savefig(output_path, dpi=100, bbox_inches="tight")
+        plt.close()
 
