@@ -9,6 +9,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import seaborn as sns
+np.random.seed(42)
 
 logger = logging.getLogger(__name__)
 logging.basicConfig(
@@ -19,7 +20,6 @@ logging.basicConfig(
 
 
 # Configuration
-np.random.seed(42)
 
 # Generate synthetic time series (random walk with drift)
 n_samples = 500
