@@ -3,24 +3,22 @@
 import numpy as np
 import pandas as pd
 from pathlib import Path
-from typing import Tuple
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.preprocessing import LabelEncoder
-from sklearn.metrics import accuracy_score, classification_report
 import matplotlib.pyplot as plt
 import logging
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='%(message)s')
 
-def create_classification_targets(data: pd.Series, n_bins: int = 3) -> Tuple[np.ndarray, LabelEncoder]:
+def create_classification_targets(data: pd.Series, n_bins: int = 3) -> tuple[np.ndarray, LabelEncoder]:
     """Create classification targets by binning continuous values."""
     labels = pd.qcut(data, q=n_bins, labels=False, duplicates='drop')
     encoder = LabelEncoder()
     encoded = encoder.fit_transform(labels)
     return encoded, encoder
 
-def create_lagged_features(data: pd.Series, lag: int = 5) -> Tuple[np.ndarray, np.ndarray]:
+def create_lagged_features(data: pd.Series, lag: int = 5) -> tuple[np.ndarray, np.ndarray]:
     """Create lagged features for classification."""
     X, y = [], []
     for i in range(lag, len(data)):

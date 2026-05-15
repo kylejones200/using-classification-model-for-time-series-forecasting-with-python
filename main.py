@@ -22,7 +22,7 @@ def load_config(config_path: Path = None) -> dict:
     if config_path is None:
         config_path = Path(__file__).parent / 'config.yaml'
     
-    with open(config_path, 'r') as f:
+    with open(config_path) as f:
         return yaml.safe_load(f)
 
 def main():
@@ -53,13 +53,12 @@ def main():
     
     train_size = int(len(X) * config['model']['train_size'])
     X_train, X_test = X[:train_size], X[train_size:]
-    y_train, y_test = y_class_lagged[:train_size], y_class_lagged[train_size:]
+    y_train, _y_test = y_class_lagged[:train_size], y_class_lagged[train_size:]
     
     model = train_classification_model(X_train, y_train)
     
-    y_pred = model.predict(X_test)
+    model.predict(X_test)
     
-    from sklearn.metrics import accuracy_score
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 accuracy = accuracy_score(y_test, y_pred)

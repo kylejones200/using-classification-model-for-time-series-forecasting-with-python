@@ -139,8 +139,8 @@ plt.tight_layout()
 plt.savefig('classification_probabilities.png', dpi=300, bbox_inches='tight')
 plt.show()
 
-logger.info(f"\nSaved: classification_ts_analysis.png")
-logger.info(f"Saved: classification_probabilities.png")
+logger.info("\nSaved: classification_ts_analysis.png")
+logger.info("Saved: classification_probabilities.png")
 
 df['traffic_direction'] = (df['bee_traffic'].diff() > 0).astype(int)
 df[['bee_traffic', 'traffic_direction']].head()
