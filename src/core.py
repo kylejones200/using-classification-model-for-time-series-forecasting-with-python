@@ -49,32 +49,34 @@ def plot_classification_results(
     plot: bool = False,
 ):
     """Plot classification results"""
-    if plot:
-        fig, ax = plt.subplots(figsize=(10, 6))
+    if not plot:
+        return
 
-        time = np.arange(len(y_true))
-        ax.plot(
-            time,
-            y_true,
-            label="Actual Class",
-            color="#4A90A4",
-            linewidth=1.2,
-            marker="o",
-            markersize=3,
-        )
-        ax.plot(
-            time,
-            y_pred,
-            label="Predicted Class",
-            color="#D4A574",
-            linewidth=1.2,
-            marker="s",
-            markersize=3,
-            alpha=0.7,
-        )
-        ax.set_xlabel("Time")
-        ax.set_ylabel("Class")
-        ax.legend(loc="best")
+    fig, ax = plt.subplots(figsize=(10, 6))
 
-        plt.savefig(output_path, dpi=100, bbox_inches="tight")
-        plt.close()
+    time = np.arange(len(y_true))
+    ax.plot(
+        time,
+        y_true,
+        label="Actual Class",
+        color="#4A90A4",
+        linewidth=1.2,
+        marker="o",
+        markersize=3,
+    )
+    ax.plot(
+        time,
+        y_pred,
+        label="Predicted Class",
+        color="#D4A574",
+        linewidth=1.2,
+        marker="s",
+        markersize=3,
+        alpha=0.7,
+    )
+    ax.set_xlabel("Time")
+    ax.set_ylabel("Class")
+    ax.legend(loc="best")
+
+    plt.savefig(output_path, dpi=100, bbox_inches="tight")
+    plt.close()
