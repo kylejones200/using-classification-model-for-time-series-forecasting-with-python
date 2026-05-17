@@ -43,9 +43,11 @@ def tokenize_time_series(series):
     )
 
 
-def main() -> None:
+def disable_wandb_logging() -> None:
     os.environ["WANDB_DISABLED"] = "true"
 
+
+def generate_synthetic_time_series_data() -> None:
     np.random.seed(42)
 
     n_samples = 100
@@ -74,14 +76,18 @@ def main() -> None:
 
     print(df["label"].value_counts())
 
+
+def load_bert_tokenizer() -> None:
     tokenizer = AutoTokenizer.from_pretrained("bert-base-uncased")
 
-    tokens = [tokenize_time_series(row) for row in df.iloc[:, :-1].values]
+    tokens = [tokenize_time_series(row[:-1].values) for _, row in df.iterrows()]
 
     labels = df["label"].values
 
     print(f"Tokenized {len(tokens)} time series")
 
+
+def split_data_into_train_and_test_sets() -> None:
     train_tokens, test_tokens, train_labels, test_labels = train_test_split(
         tokens, labels, test_size=0.2, random_state=42
     )
@@ -94,6 +100,8 @@ def main() -> None:
 
     print(f"Test samples: {len(test_dataset)}")
 
+
+def load_pre_trained_bert_model() -> None:
     model = BertForSequenceClassification.from_pretrained(
         "bert-base-uncased", num_labels=2
     )
@@ -116,6 +124,8 @@ def main() -> None:
         eval_dataset=test_dataset,
     )
 
+
+def fine_tune_the_model() -> None:
     print("Training BERT model...")
 
     trainer.train()
@@ -127,6 +137,15 @@ def main() -> None:
     accuracy = accuracy_score(test_labels, predicted_labels)
 
     print(f"\n✓ Test Accuracy: {accuracy:.2%}")
+
+
+def main() -> None:
+    disable_wandb_logging()
+    generate_synthetic_time_series_data()
+    load_bert_tokenizer()
+    split_data_into_train_and_test_sets()
+    load_pre_trained_bert_model()
+    fine_tune_the_model()
 
 
 if __name__ == "__main__":
