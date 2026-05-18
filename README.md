@@ -2,6 +2,14 @@
 
 This project demonstrates using classification models for time series forecasting by converting regression to classification.
 
+## Business context
+
+Traditionally, time series forecasting focuses on predicting specific numerical values (like temperature, sales, or stock prices). However, sometimes the goal is not to predict the exact value but rather to identify trends, directions, or events. For example:
+
+- Will the value increase or decrease? - Will a machine fail within the next hour? - Will sales cross a specific threshold?
+
+<figcaption>Photo by <a class="markup--anchor markup--figure-anchor" rel="photo-creator noopener" target="_blank">zhang kaiyv</a> on <a class="markup--anchor markup--figure-anchor"
+
 ## Article
 
 Medium article: [Using Classification Model for Time Series Forecasting with Python](https://medium.com/@kylejones_47003/using-classification-model-for-time-series-forecasting-with-python-d74a1021a5c4)
