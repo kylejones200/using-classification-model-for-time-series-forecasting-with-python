@@ -1,9 +1,5 @@
 #!/usr/bin/env python3
-"""
-Using Classification Model for Time Series Forecasting
-
-Main entry point for running classification-based forecasting.
-"""
+"""Using Classification Model for Time Series Forecasting."""
 
 import argparse
 import logging
@@ -12,35 +8,34 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 import yaml
+from sklearn.metrics import accuracy_score
 from src.core import (
     create_classification_targets,
     create_lagged_features,
+    plot_classification_results,
     train_classification_model,
 )
 
+logging.basicConfig(
+    level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
+)
 
-def load_config(config_path: Path = None) -> dict:
-    """Load configuration from YAML file."""
+
+def load_config(config_path: Path | None = None) -> dict:
     if config_path is None:
         config_path = Path(__file__).parent / "config.yaml"
-
     with open(config_path) as f:
         return yaml.safe_load(f)
 
 
-def main():
+def main() -> None:
     parser = argparse.ArgumentParser(
         description="Using Classification Model for Time Series Forecasting"
     )
-    parser.add_argument("--config", type=Path, default=None, help="Path to config file")
-    parser.add_argument(
-        "--data-path", type=Path, default=None, help="Path to data file"
-    )
-    parser.add_argument(
-        "--output-dir", type=Path, default=None, help="Output directory"
-    )
+    parser.add_argument("--config", type=Path, default=None)
+    parser.add_argument("--data-path", type=Path, default=None)
+    parser.add_argument("--output-dir", type=Path, default=None)
     args = parser.parse_args()
-
     config = load_config(args.config)
     output_dir = (
         Path(args.output_dir)
@@ -61,36 +56,28 @@ def main():
     else:
         raise ValueError("No data source specified")
 
-        y_class, encoder = create_classification_targets(
-            data, config["model"]["n_bins"]
-        )
-
-        X, y = create_lagged_features(data, config["model"]["lag"])
+    y_class, _encoder = create_classification_targets(
+        data, config["model"]["n_bins"]
+    )
+    X, _y = create_lagged_features(data, config["model"]["lag"])
     y_class_lagged = y_class[config["model"]["lag"] :]
-
     train_size = int(len(X) * config["model"]["train_size"])
     X_train, X_test = X[:train_size], X[train_size:]
-    y_train, _y_test = y_class_lagged[:train_size], y_class_lagged[train_size:]
-
+    y_train, y_test = y_class_lagged[:train_size], y_class_lagged[train_size:]
     model = train_classification_model(X_train, y_train)
+    y_pred = model.predict(X_test)
 
-    model.predict(X_test)
+    accuracy = accuracy_score(y_test, y_pred)
+    logging.info(f"\nClassification Accuracy: {accuracy:.4f}")
+    plot_classification_results(
+        y_test,
+        y_pred,
+        "Classification-Based Forecasting",
+        output_dir / "classification_forecast.png",
+        plot=True,
+    )
+    logging.info(f"\nAnalysis complete. Figures saved to {output_dir}")
 
-
-logging.basicConfig(
-    level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
-)
-accuracy = accuracy_score(y_test, y_pred)
-logging.info(f"\nClassification Accuracy: {accuracy:.4f}")
-
-plot_classification_results(
-    y_test,
-    y_pred,
-    "Classification-Based Forecasting",
-    output_dir / "classification_forecast.png",
-)
-
-logging.info(f"\nAnalysis complete. Figures saved to {output_dir}")
 
 if __name__ == "__main__":
     main()

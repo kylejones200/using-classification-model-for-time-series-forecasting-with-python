@@ -1,38 +1,25 @@
 """Core functions for using classification models for time series forecasting."""
-
-import logging
 from pathlib import Path
-
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.preprocessing import LabelEncoder
 
-# Configure logging
-logging.basicConfig(level=logging.INFO, format="%(message)s")
-
-
-def create_classification_targets(
-    data: pd.Series, n_bins: int = 3
-) -> tuple[np.ndarray, LabelEncoder]:
+def create_classification_targets(data: pd.Series, n_bins: int=3) -> tuple[np.ndarray, LabelEncoder]:
     """Create classification targets by binning continuous values."""
-    labels = pd.qcut(data, q=n_bins, labels=False, duplicates="drop")
+    labels = pd.qcut(data, q=n_bins, labels=False, duplicates='drop')
     encoder = LabelEncoder()
     encoded = encoder.fit_transform(labels)
-    return encoded, encoder
+    return (encoded, encoder)
 
-
-def create_lagged_features(
-    data: pd.Series, lag: int = 5
-) -> tuple[np.ndarray, np.ndarray]:
+def create_lagged_features(data: pd.Series, lag: int=5) -> tuple[np.ndarray, np.ndarray]:
     """Create lagged features for classification."""
-    X, y = [], []
+    X, y = ([], [])
     for i in range(lag, len(data)):
-        X.append(data[i - lag : i].values)
+        X.append(data[i - lag:i].values)
         y.append(data[i])
-    return np.array(X), np.array(y)
-
+    return (np.array(X), np.array(y))
 
 def train_classification_model(X: np.ndarray, y: np.ndarray) -> RandomForestClassifier:
     """Train Random Forest classifier for time series."""
@@ -40,43 +27,16 @@ def train_classification_model(X: np.ndarray, y: np.ndarray) -> RandomForestClas
     model.fit(X, y)
     return model
 
-
-def plot_classification_results(
-    y_true: np.ndarray,
-    y_pred: np.ndarray,
-    title: str,
-    output_path: Path,
-    plot: bool = False,
-):
+def plot_classification_results(y_true: np.ndarray, y_pred: np.ndarray, title: str, output_path: Path, plot: bool=False):
     """Plot classification results"""
     if not plot:
         return
-
     fig, ax = plt.subplots(figsize=(10, 6))
-
     time = np.arange(len(y_true))
-    ax.plot(
-        time,
-        y_true,
-        label="Actual Class",
-        color="#4A90A4",
-        linewidth=1.2,
-        marker="o",
-        markersize=3,
-    )
-    ax.plot(
-        time,
-        y_pred,
-        label="Predicted Class",
-        color="#D4A574",
-        linewidth=1.2,
-        marker="s",
-        markersize=3,
-        alpha=0.7,
-    )
-    ax.set_xlabel("Time")
-    ax.set_ylabel("Class")
-    ax.legend(loc="best")
-
-    plt.savefig(output_path, dpi=100, bbox_inches="tight")
+    ax.plot(time, y_true, label='Actual Class', color='#4A90A4', linewidth=1.2, marker='o', markersize=3)
+    ax.plot(time, y_pred, label='Predicted Class', color='#D4A574', linewidth=1.2, marker='s', markersize=3, alpha=0.7)
+    ax.set_xlabel('Time')
+    ax.set_ylabel('Class')
+    ax.legend(loc='best')
+    plt.savefig(output_path, dpi=100, bbox_inches='tight')
     plt.close()

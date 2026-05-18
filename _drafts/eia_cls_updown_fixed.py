@@ -86,7 +86,6 @@ def main(plot: bool = False):
     df = build_supervised(s, cfg.max_lag, cfg.season)
     acc, auc = chrono_classification(df, cfg)
     logger.info(f"Up/Down classification — Accuracy: {acc:.4f}, AUC: {auc:.4f}")
-
     # Simple visualization of last 3 years with predicted direction baseline (seasonal naive)
     tail = s.tail(36)
     if plot:

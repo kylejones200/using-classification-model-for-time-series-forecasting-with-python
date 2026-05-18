@@ -49,41 +49,25 @@ def disable_wandb_logging() -> None:
 
 def generate_synthetic_time_series_data() -> None:
     np.random.seed(42)
-
     n_samples = 100
-
     n_timestamps = 50
-
     class_0 = np.random.normal(0, 1, (n_samples // 2, n_timestamps))
-
     class_1 = np.random.normal(2, 1, (n_samples // 2, n_timestamps))
-
     X = np.vstack((class_0, class_1))
-
     y = np.array([0] * (n_samples // 2) + [1] * (n_samples // 2))
-
     df = pd.DataFrame(X)
-
     df["label"] = y
-
     print("Dataset shape:", df.shape)
-
     print("\nFirst few rows:")
-
     print(df.head())
-
     print("\nClass distribution:")
-
     print(df["label"].value_counts())
 
 
 def load_bert_tokenizer() -> None:
-    tokenizer = AutoTokenizer.from_pretrained("bert-base-uncased")
-
+    AutoTokenizer.from_pretrained("bert-base-uncased")
     tokens = [tokenize_time_series(row[:-1].values) for _, row in df.iterrows()]
-
-    labels = df["label"].values
-
+    df["label"].values
     print(f"Tokenized {len(tokens)} time series")
 
 
@@ -91,13 +75,9 @@ def split_data_into_train_and_test_sets() -> None:
     train_tokens, test_tokens, train_labels, test_labels = train_test_split(
         tokens, labels, test_size=0.2, random_state=42
     )
-
     train_dataset = TimeSeriesDataset(train_tokens, train_labels)
-
     test_dataset = TimeSeriesDataset(test_tokens, test_labels)
-
     print(f"Training samples: {len(train_dataset)}")
-
     print(f"Test samples: {len(test_dataset)}")
 
 
@@ -105,7 +85,6 @@ def load_pre_trained_bert_model() -> None:
     model = BertForSequenceClassification.from_pretrained(
         "bert-base-uncased", num_labels=2
     )
-
     training_args = TrainingArguments(
         output_dir="./results",
         num_train_epochs=3,
@@ -116,8 +95,7 @@ def load_pre_trained_bert_model() -> None:
         logging_steps=10,
         report_to="none",
     )
-
-    trainer = Trainer(
+    Trainer(
         model=model,
         args=training_args,
         train_dataset=train_dataset,
@@ -127,15 +105,10 @@ def load_pre_trained_bert_model() -> None:
 
 def fine_tune_the_model() -> None:
     print("Training BERT model...")
-
     trainer.train()
-
     predictions = trainer.predict(test_dataset)
-
     predicted_labels = np.argmax(predictions.predictions, axis=1)
-
     accuracy = accuracy_score(test_labels, predicted_labels)
-
     print(f"\n✓ Test Accuracy: {accuracy:.2%}")
 
 
